@@ -1,10 +1,15 @@
 const router = require("express").Router();
 const addPage = require("../views/addPage");
 const { Page } = require("../models");
-const { wikiPage } = require("../views");
+const { wikiPage, main } = require("../views");
 
-router.get("/", (req, res, next) => {
-  res.send("This is the GET request for root for wiki.js");
+router.get("/", async (req, res, next) => {
+  try {
+    const pages = await Page.findAll();
+    res.send(main(pages));
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/add", (req, res, next) => {
