@@ -13,21 +13,15 @@ router.get("/add", (req, res, next) => {
 router.post("/", async (req, res, next) => {
   const { name, title, email, content, status } = req.body;
 
-  const generateSlug = () => {
-    console.log("THIS IS REGEX", title.replace(/\s+/g, "_").replace(/\W/g, ""));
-  };
-
-  generateSlug();
-
-  //   try {
-  //     const page = await Page.create({
-  //       title: title,
-  //       content: content,
-  //     });
-  //     res.redirect("/");
-  //   } catch (error) {
-  //     next(error);
-  //   }
+  try {
+    const page = await Page.create({
+      title: title,
+      content: content,
+    });
+    res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
