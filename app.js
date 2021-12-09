@@ -22,8 +22,8 @@ app.get("/", (req, res, next) => {
 });
 
 const init = async () => {
-  db.sync({ force: true });
-
+  db.sync();
+  // { force: true }
   const PORT = 1337;
 
   app.listen(PORT, () => {
