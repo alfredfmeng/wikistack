@@ -26,7 +26,7 @@ router.get("/:slug", async (req, res, next) => {
     });
 
     if (!page) {
-      res.send("Looks like this page doesn't exist");
+      res.status(404).send("Looks like this page doesn't exist");
     } else {
       const author = await page.getAuthor();
       res.send(wikiPage(page, author));
