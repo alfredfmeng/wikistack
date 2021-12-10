@@ -25,9 +25,12 @@ router.get("/:slug", async (req, res, next) => {
       },
     });
 
-    const author = await page.getAuthor();
-
-    res.send(wikiPage(page, author));
+    if (!page) {
+      res.send("Looks like this page doesn't exist");
+    } else {
+      const author = await page.getAuthor();
+      res.send(wikiPage(page, author));
+    }
   } catch (error) {
     next(error);
   }
