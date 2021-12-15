@@ -46,10 +46,10 @@ router.get("/:slug/edit", async (req, res, next) => {
     });
 
     if (!page) {
-      res.status(404).send('Looks like this page doesn\'t exist');
+      res.status(404).send("Looks like this page doesn't exist");
     } else {
       const author = await page.getAuthor();
-      console.log('THIS IS THE CONTENT >>>>:', page.content)
+      console.log("THIS IS THE CONTENT >>>>:", page.content);
       res.send(editPage(page, author));
     }
   } catch (error) {
@@ -75,6 +75,22 @@ router.post("/", async (req, res, next) => {
     await page.setAuthor(user);
 
     res.redirect(`/wiki/${page.slug}`);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/:slug", async (req, res, next) => {
+  const slug = req.params.slug;
+  try {
+    const [updatedRowcount, updatedPages] = await Page.update(req.body, {
+      where: {
+        slug: slug,
+      },
+      returning: true,
+    });
+
+    res.redirect("/wiki/" + updatedPages[0].slug);
   } catch (error) {
     next(error);
   }
