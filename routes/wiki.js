@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const addPage = require("../views/addPage");
 const { Page, User } = require("../models");
-const { wikiPage, main } = require("../views");
+const { wikiPage, main, editPage } = require("../views");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -44,6 +44,14 @@ router.get("/:slug/edit", async (req, res, next) => {
         slug: slug,
       },
     });
+
+    if (!page) {
+      res.status(404).send('Looks like this page doesn\'t exist');
+    } else {
+      const author = await page.getAuthor();
+      console.log('THIS IS THE CONTENT >>>>:', page.content)
+      res.send(editPage(page, author));
+    }
   } catch (error) {
     next(error);
   }
