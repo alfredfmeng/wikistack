@@ -57,6 +57,20 @@ router.get("/:slug/edit", async (req, res, next) => {
   }
 });
 
+router.delete("/:slug", async (req, res, next) => {
+  const slug = req.params.slug;
+  try {
+    await Page.destroy({
+      where: {
+        slug: slug,
+      },
+    });
+    res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post("/", async (req, res, next) => {
   const { name, title, email, content, status } = req.body;
   try {
