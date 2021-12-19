@@ -5,7 +5,7 @@ const { db } = require("./models");
 const wikiRouter = require("./routes/wiki");
 const userRouter = require("./routes/users");
 const methodOverride = require("method-override");
-const { notFoundPage } = require("./views");
+const { notFoundPage, errorPage } = require("./views");
 
 db.authenticate().then(() => {
   console.log("connected to the database");
@@ -25,6 +25,11 @@ app.get("/", (req, res, next) => {
 
 app.use((req, res, next) => {
   res.status(404).send(notFoundPage());
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send(errorPage(err));
 });
 
 const init = async () => {
