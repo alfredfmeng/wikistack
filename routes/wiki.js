@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const addPage = require("../views/addPage");
 const { Page, User } = require("../models");
-const { wikiPage, main, editPage } = require("../views");
+const { wikiPage, main, editPage, notFoundPage } = require("../views");
 
+// GET '/'
 router.get("/", async (req, res, next) => {
   try {
     const pages = await Page.findAll();
@@ -12,10 +13,12 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// GET '/add'
 router.get("/add", (req, res, next) => {
   res.send(addPage());
 });
 
+// GET '/:slug'
 router.get("/:slug", async (req, res, next) => {
   const slug = req.params.slug;
   try {
@@ -24,9 +27,8 @@ router.get("/:slug", async (req, res, next) => {
         slug: slug,
       },
     });
-
     if (!page) {
-      res.status(404).send("Looks like this page doesn't exist");
+      res.status(404).send(notFoundPage());
     } else {
       const author = await page.getAuthor();
       res.send(wikiPage(page, author));
@@ -36,6 +38,7 @@ router.get("/:slug", async (req, res, next) => {
   }
 });
 
+// GET '/:slug/edit'
 router.get("/:slug/edit", async (req, res, next) => {
   const slug = req.params.slug;
   try {
@@ -44,12 +47,10 @@ router.get("/:slug/edit", async (req, res, next) => {
         slug: slug,
       },
     });
-
     if (!page) {
       res.status(404).send("Looks like this page doesn't exist");
     } else {
       const author = await page.getAuthor();
-      console.log("THIS IS THE CONTENT >>>>:", page.content);
       res.send(editPage(page, author));
     }
   } catch (error) {
@@ -57,6 +58,7 @@ router.get("/:slug/edit", async (req, res, next) => {
   }
 });
 
+// DELETE '/:slug'
 router.delete("/:slug", async (req, res, next) => {
   const slug = req.params.slug;
   try {
@@ -71,6 +73,7 @@ router.delete("/:slug", async (req, res, next) => {
   }
 });
 
+// POST '/'
 router.post("/", async (req, res, next) => {
   const { name, title, email, content, status } = req.body;
   try {
@@ -94,6 +97,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+// PUT '/:SLUG'
 router.put("/:slug", async (req, res, next) => {
   const slug = req.params.slug;
   try {

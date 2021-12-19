@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { User, Page } = require("../models");
-const { userList, userPages } = require("../views");
+const { userList, userPages, notFoundPage } = require("../views");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -20,7 +20,11 @@ router.get("/:id", async (req, res, next) => {
         authorId: id,
       },
     });
-    res.send(userPages(user, page));
+    if (!user) {
+      res.status(404).send(notFoundPage());
+    } else {
+      res.send(userPages(user, page));
+    }
   } catch (error) {
     next(error);
   }
