@@ -5,6 +5,7 @@ const userList = require("./userList");
 const userPages = require("./userPages");
 const wikiPage = require("./wikiPage");
 const notFoundPage = require("./notFoundPage");
+const errorPage = require("./errorPage");
 
 module.exports = {
   addPage,
@@ -14,4 +15,5 @@ module.exports = {
   userPages,
   wikiPage,
   notFoundPage,
+  errorPage,
 };
