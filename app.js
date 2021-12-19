@@ -5,6 +5,7 @@ const { db } = require("./models");
 const wikiRouter = require("./routes/wiki");
 const userRouter = require("./routes/users");
 const methodOverride = require("method-override");
+const { notFoundPage } = require("./views");
 
 db.authenticate().then(() => {
   console.log("connected to the database");
@@ -22,9 +23,12 @@ app.get("/", (req, res, next) => {
   res.redirect("/wiki");
 });
 
+app.use((req, res, next) => {
+  res.status(404).send(notFoundPage());
+});
+
 const init = async () => {
-  db.sync();
-  // { force: true }
+  db.sync({ force: true });
 
   const PORT = 1337;
 
