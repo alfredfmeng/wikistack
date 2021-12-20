@@ -44,7 +44,16 @@ const User = db.define("user", {
   },
 });
 
+const Tag = db.define("tag", {
+  name: {
+    type: Sequelize.STRING,
+  },
+});
+
 Page.belongsTo(User, { as: "author" });
 User.hasMany(Page, { foreignKey: "authorId" });
 
-module.exports = { db, Page, User };
+Page.belongsToMany(Tag, { through: "page_tags" });
+Tag.belongsToMany(Page, { through: "page_tags" });
+
+module.exports = { db, Page, User, Tag };
