@@ -43,6 +43,24 @@ Page.findByTag = function (search) {
   });
 };
 
+Page.prototype.findSimilar = function (tags) {
+  return Page.findAll({
+    where: {
+      id: {
+        [Sequelize.Op.ne]: this.id,
+      },
+    },
+    include: {
+      model: Tag,
+      where: {
+        name: {
+          [Sequelize.Op.in]: tags,
+        },
+      },
+    },
+  });
+};
+
 const User = db.define("user", {
   name: {
     type: Sequelize.STRING,
