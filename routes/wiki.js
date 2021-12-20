@@ -26,12 +26,15 @@ router.get("/:slug", async (req, res, next) => {
       where: {
         slug: slug,
       },
+      include: {
+        model: User,
+        as: "author",
+      },
     });
     if (!page) {
       res.status(404).send(notFoundPage());
     } else {
-      const author = await page.getAuthor();
-      res.send(wikiPage(page, author));
+      res.send(wikiPage(page, page.author));
     }
   } catch (error) {
     next(error);
@@ -46,12 +49,15 @@ router.get("/:slug/edit", async (req, res, next) => {
       where: {
         slug: slug,
       },
+      include: {
+        model: User,
+        as: "author",
+      },
     });
     if (!page) {
       res.status(404).send("Looks like this page doesn't exist");
     } else {
-      const author = await page.getAuthor();
-      res.send(editPage(page, author));
+      res.send(editPage(page, page.author));
     }
   } catch (error) {
     next(error);
