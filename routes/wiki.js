@@ -13,6 +13,16 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// GET '/search'
+router.get("/search", async (req, res, next) => {
+  try {
+    const pages = await Page.findByTag(req.query.search);
+    res.send(main(pages));
+  } catch (error) {
+    next(error);
+  }
+});
+
 // GET '/add'
 router.get("/add", (req, res, next) => {
   res.send(addPage());
