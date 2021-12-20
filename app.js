@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
 });
 
 const init = async () => {
-  db.sync({ force: true });
+  db.sync();
 
   const PORT = 1337;
 
