@@ -30,6 +30,19 @@ Page.beforeValidate((page) => {
   }
 });
 
+Page.findByTag = function (search) {
+  return Page.findAll({
+    include: {
+      model: Tag,
+      where: {
+        name: {
+          [Sequelize.Op.substring]: search,
+        },
+      },
+    },
+  });
+};
+
 const User = db.define("user", {
   name: {
     type: Sequelize.STRING,
