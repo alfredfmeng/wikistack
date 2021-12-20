@@ -56,6 +56,23 @@ router.get("/:slug", async (req, res, next) => {
   }
 });
 
+// GET '/:slug/similar'
+router.get("/:slug/similar", async (req, res, next) => {
+  try {
+    const page = await Page.findOne({
+      where: {
+        slug: req.params.slug,
+      },
+      include: [{ model: Tag }],
+    });
+    const tagNames = page.tags.map((tag) => tag.name);
+    const similars = await page.findSimilar(tagNames);
+    res.send(main(similars));
+  } catch (error) {
+    next(error);
+  }
+});
+
 // GET '/:slug/edit'
 router.get("/:slug/edit", async (req, res, next) => {
   const slug = req.params.slug;
