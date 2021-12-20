@@ -1,13 +1,18 @@
 const html = require("html-template-tag");
 const layout = require("./layout");
 
-module.exports = (page, author) =>
+module.exports = (page) =>
   layout(html`
     <h3>
       ${page.title}
       <small> (<a href="/wiki/${page.slug}/similar">Similar</a>)</small>
     </h3>
-    <h4>by <a href="/users/${author.id}">${author.name}</a></h4>
+    <h4>by <a href="/users/${page.author.id}">${page.author.name}</a></h4>
+    <ul>
+      ${page.tags.map((tag) => {
+        return html` <li>${tag.name}</li> `;
+      })}
+    </ul>
     <hr />
     <div class="page-body">${page.content}</div>
     <hr />
