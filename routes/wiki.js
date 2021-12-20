@@ -39,7 +39,7 @@ router.get("/:slug", async (req, res, next) => {
     if (!page) {
       res.status(404).send(notFoundPage());
     } else {
-      res.send(wikiPage(page, page.author, page.tags));
+      res.send(wikiPage(page));
     }
   } catch (error) {
     next(error);
