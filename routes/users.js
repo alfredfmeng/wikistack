@@ -14,16 +14,13 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   const id = req.params.id;
   try {
-    const user = await User.findByPk(id);
-    const page = await Page.findAll({
-      where: {
-        authorId: id,
-      },
+    const user = await User.findByPk(id, {
+      include: [{ model: Page }],
     });
     if (!user) {
       res.status(404).send(notFoundPage());
     } else {
-      res.send(userPages(user, page));
+      res.send(userPages(user, user.pages));
     }
   } catch (error) {
     next(error);
