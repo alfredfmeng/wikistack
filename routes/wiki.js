@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const addPage = require("../views/addPage");
-const { Page, User } = require("../models");
+const { Page, User, Tag } = require("../models");
 const { wikiPage, main, editPage, notFoundPage } = require("../views");
 
 // GET '/'
@@ -26,15 +26,20 @@ router.get("/:slug", async (req, res, next) => {
       where: {
         slug: slug,
       },
-      include: {
-        model: User,
-        as: "author",
-      },
+      include: [
+        {
+          model: User,
+          as: "author",
+        },
+        {
+          model: Tag,
+        },
+      ],
     });
     if (!page) {
       res.status(404).send(notFoundPage());
     } else {
-      res.send(wikiPage(page, page.author));
+      res.send(wikiPage(page, page.author, page.tags));
     }
   } catch (error) {
     next(error);
@@ -81,7 +86,7 @@ router.delete("/:slug", async (req, res, next) => {
 
 // POST '/'
 router.post("/", async (req, res, next) => {
-  const { name, title, email, content, status } = req.body;
+  const { name, title, email, content, status, tag } = req.body;
   try {
     const [user, created] = await User.findOrCreate({
       where: {
@@ -96,6 +101,20 @@ router.post("/", async (req, res, next) => {
     });
 
     await page.setAuthor(user);
+
+    const tagList = tag.split(" ");
+    const tags = await Promise.all(
+      tagList.map(async (tagName) => {
+        const [tag, wasCreated] = await Tag.findOrCreate({
+          where: {
+            name: tagName,
+          },
+        });
+        return tag;
+      })
+    );
+
+    await page.addTags(tags);
 
     res.redirect(`/wiki/${page.slug}`);
   } catch (error) {
