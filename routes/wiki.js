@@ -152,6 +152,7 @@ router.post("/", async (req, res, next) => {
 // PUT '/:SLUG'
 router.put("/:slug", async (req, res, next) => {
   const slug = req.params.slug;
+  const tag = req.body.tag;
   try {
     const [updatedRowcount, updatedPages] = await Page.update(req.body, {
       where: {
@@ -159,6 +160,20 @@ router.put("/:slug", async (req, res, next) => {
       },
       returning: true,
     });
+
+    const tagList = tag.split(" ");
+    const tags = await Promise.all(
+      tagList.map(async (tagName) => {
+        const [tag, wasCreated] = await Tag.findOrCreate({
+          where: {
+            name: tagName,
+          },
+        });
+        return tag;
+      })
+    );
+
+    await updatedPages[0].setTags(tags);
 
     res.redirect("/wiki/" + updatedPages[0].slug);
   } catch (error) {
