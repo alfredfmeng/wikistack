@@ -6,7 +6,7 @@ module.exports = (pages) =>
     <h3>Pages</h3>
     <hr />
     <form method="GET" action="/wiki/search">
-      <input type="text" name="search" />
+      <input type="text" name="search" placeholder="Search Pages by Tag" />
       <button type="submit">Search</button>
     </form>
     <hr />
